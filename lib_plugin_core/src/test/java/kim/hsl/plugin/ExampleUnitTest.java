@@ -1,4 +1,4 @@
-package com.example.lib_plugin_core;
+package kim.hsl.plugin;
 
 import org.junit.Test;
 

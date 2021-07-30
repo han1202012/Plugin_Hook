@@ -1,4 +1,4 @@
-package com.example.lib_plugin_core;
+package kim.hsl.plugin;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.lib_plugin_core.test", appContext.getPackageName());
+        assertEquals("kim.hsl.plugin.test", appContext.getPackageName());
     }
 }
