@@ -38,4 +38,12 @@ public class PluginManager {
         this.mBase = context;
     }
 
+    /**
+     * Application 启动后 , 调用该方法初始化插件化环境
+     *  加载插件包中的字节码
+     */
+    private void init() {
+
+    }
+
 }
