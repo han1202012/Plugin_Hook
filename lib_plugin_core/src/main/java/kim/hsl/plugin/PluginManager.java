@@ -2,6 +2,10 @@ package kim.hsl.plugin;
 
 import android.content.Context;
 
+import java.lang.reflect.Field;
+
+import dalvik.system.DexClassLoader;
+
 /**
  * 使用 Hook 实现的插件使用入口
  *  1. 加载插件包中的字节码
@@ -52,6 +56,69 @@ public class PluginManager {
      *  加载插件包中的字节码
      */
     private void init() {
+        // 加载 apk 文件
+        loadApk();
+    }
+
+    private void loadApk() {
+        // 插件包的绝对路径 ,  /data/data/< package name >/files/
+        String apkPath = mBase.getFilesDir().getAbsolutePath() + "x.apk";
+        // 加载插件包后产生的缓存文件路径
+        // data/data/< package name >/app_plugin_cache
+        String cachePath =
+                mBase.getDir("plugin_cache", Context.MODE_PRIVATE).getAbsolutePath();
+        // 创建类加载器
+        DexClassLoader dexClassLoader =
+                new DexClassLoader(
+                        apkPath,                // 插件包路径
+                        cachePath,              // 插件包加载时产生的缓存路径
+                        null,   // 库的搜索路径, 可以设置为空
+                        mBase.getClassLoader()  // 父加载器, PathClassLoader
+                );
+
+        // 1. 反射 " 插件包 " 应用的 dexElement
+
+        // 通过反射获取插件包中的 dexElements
+        // 这种类加载是合并类加载 , 将所有的 Dex 文件 , 加入到应用的 dex 文件集合中
+        //  可参考 dex 加固 , 热修复 , 插装式插件化 的实现步骤
+        // 反射出 BaseDexClassLoader 类 , PathClassLoader 和 DexClassLoader
+        //  都是 BaseDexClassLoader 的子类
+        Class<?> baseDexClassLoaderClass = null;
+        try {
+            baseDexClassLoaderClass = Class.forName("dalvik.system.BaseDexClassLoader");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // 获取 BaseDexClassLoader 类中的
+        //  private final DexPathList pathList 成员变量
+        Field pathListField = null;
+        try {
+            pathListField = baseDexClassLoaderClass.getDeclaredField("pathList");
+            // 设置属性的可见性
+            pathListField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
+        // 获取 DexClassLoader dexClassLoader 类加载器的 DexPathList pathList 成员变量
+        //  DexClassLoader 继承了 BaseDexClassLoader, 因此其内部肯定有
+        //  private final DexPathList pathList 成员变量
+        Object pathListObject = null;
+        try {
+            pathListObject = pathListField.get(dexClassLoader);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        // 2. 反射 " 宿主 " 应用的 dexElement
+
+        // 获取 DexPathList pathList 成员变量的字节码类型
+        Class<?> dexPathListClass = pathListObject.getClass();
+
+
+
+
 
     }
 
