@@ -57,14 +57,15 @@ public class PluginManager {
      * Application 启动后 , 调用该方法初始化插件化环境
      *  加载插件包中的字节码
      */
-    private void init() {
+    public void init() {
         // 加载 apk 文件
         loadApk();
     }
 
     private void loadApk() {
-        // 插件包的绝对路径 ,  /data/data/< package name >/files/
-        String apkPath = mBase.getFilesDir().getAbsolutePath() + "plugin.apk";
+        // 插件包的绝对路径 ,  /data/user/0/com.example.plugin_hook/files , 注意最后没有 " / "
+        // 需要手动添加 "/"
+        String apkPath = mBase.getFilesDir().getAbsolutePath() + "/plugin.apk";
         // 加载插件包后产生的缓存文件路径
         // /data/data/< package name >/app_plugin_cache/
         String cachePath =
