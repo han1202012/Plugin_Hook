@@ -1,19 +1,15 @@
 package com.example.plugin_hook;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class MainActivity2 extends Activity {
 
-    private static final String TAG = "MainActivity2";
+    private static final String TAG = "plugin_MainActivity2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

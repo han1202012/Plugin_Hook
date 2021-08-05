@@ -7,7 +7,7 @@ import kim.hsl.plugin.PluginManager;
 
 public class MyApplication extends Application {
 
-    private static final String TAG = "MyApplication";
+    private static final String TAG = "plugin_MyApplication";
 
     @Override
     public void onCreate() {
