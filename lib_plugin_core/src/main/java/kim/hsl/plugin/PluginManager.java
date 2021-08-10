@@ -60,6 +60,16 @@ public class PluginManager {
     public void init() {
         // 加载 apk 文件
         loadApk();
+
+        // 在 AMS 启动之前使用占坑 Activity 替换插件包 Activity
+        HookUtils.hookAms(mBase);
+
+        // 在 AMS 执行完毕后 , 主线程 ActivityThread 中创建 Activity 实例对象之间 ,
+        //      再将插件包 Activity 替换回去
+        HookUtils.hookActivityThread(mBase);
+
+        //HookUtils.HookAMS(mBase);
+        //HookUtils.hookMH(mBase);
     }
 
     private void loadApk() {

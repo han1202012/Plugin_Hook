@@ -3,6 +3,7 @@ package com.example.plugin_hook;
 import android.app.Application;
 import android.util.Log;
 
+import kim.hsl.plugin.HookUtils;
 import kim.hsl.plugin.PluginManager;
 
 public class MyApplication extends Application {

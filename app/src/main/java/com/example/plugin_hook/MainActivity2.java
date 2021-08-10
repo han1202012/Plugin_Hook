@@ -1,8 +1,11 @@
 package com.example.plugin_hook;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -43,5 +46,20 @@ public class MainActivity2 extends Activity {
         } catch (InstantiationException e) {
             e.printStackTrace();
         }
+
+
+        // 设置按钮点击事件
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // 启动插件包中的 Activity
+                Intent pluginIntent = new Intent();
+                pluginIntent.setComponent(new ComponentName("com.example.plugin",
+                        "com.example.plugin.MainActivity"));
+                startActivity(pluginIntent);
+
+            }
+        });
     }
 }
