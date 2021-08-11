@@ -22,11 +22,13 @@ public class MainActivity extends Activity {
         Log.i(TAG, "Plugin MainActivity");
     }
 
+    /*
+    // 这种方式侵入代码 , 造成开发的差异性 , 建议使用 Hook 加载插件资源
     @Override
     public Resources getResources() {
         if (getApplication() != null && getApplication().getResources() != null) {
             return getApplication().getResources();
         }
         return super.getResources();
-    }
+    }*/
 }

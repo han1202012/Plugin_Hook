@@ -13,9 +13,9 @@ public class MyApplication extends Application {
     private static final String TAG = "plugin_MyApplication";
 
     /**
-     * 插件资源
+     * 插件资源, 这种方式侵入代码 , 造成开发的差异性 , 建议使用 Hook 加载插件资源
      */
-    private Resources pluginResources;
+    //private Resources pluginResources;
 
     @Override
     public void onCreate() {
@@ -42,15 +42,17 @@ public class MyApplication extends Application {
 
         Log.i(TAG, "插件化 初始化完毕");
 
-        // 设置插件包中的资源文件
-        pluginResources = PluginManager.getInstance(this).getmResources();
+        // 设置插件包中的资源文件, 这种方式侵入代码 , 造成开发的差异性 , 建议使用 Hook 加载插件资源
+        //pluginResources = PluginManager.getInstance(this).getmResources();
 
     }
 
+    /*
+    // 这种方式侵入代码 , 造成开发的差异性 , 建议使用 Hook 加载插件资源
     @Override
     public Resources getResources() {
         if (pluginResources != null)
             return pluginResources;
         return super.getResources();
-    }
+    }*/
 }
