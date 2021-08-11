@@ -12,6 +12,9 @@ public class MyApplication extends Application {
 
     private static final String TAG = "plugin_MyApplication";
 
+    /**
+     * 插件资源
+     */
     private Resources pluginResources;
 
     @Override

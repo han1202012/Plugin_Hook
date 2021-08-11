@@ -299,12 +299,13 @@ public class PluginManager {
      * @return
      */
     public Resources loadResources() {
-        // 获取插件包 APK 文件路径 , 加载该 APK 下的资源
-        // /data/user/0/com.example.plugin_hook/files/plugin.apk
-        String pluginPath = mBase.getFilesDir() + "/plugin.apk";
 
         // 使用反射工具类进行链式调用 , 创建 AssetManager 对象
         AssetManager assetManager = Reflector.on(AssetManager.class).newInstance();
+
+        // 获取插件包 APK 文件路径 , 加载该 APK 下的资源
+        // /data/user/0/com.example.plugin_hook/files/plugin.apk
+        String pluginPath = mBase.getFilesDir() + "/plugin.apk";
 
         // 使用反射调用 AssetManager 中的 addAssetPath 方法 , 传入 APK 插件包的路径
         // addAssetPath 方法的参数为 /data/user/0/com.example.plugin_hook/files/plugin.apk
