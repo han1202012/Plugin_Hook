@@ -1,18 +1,28 @@
 package com.example.plugin_hook;
 
 import android.app.Application;
+import android.content.res.Resources;
 import android.util.Log;
 
-import kim.hsl.plugin.HookUtils;
+import java.io.File;
+
 import kim.hsl.plugin.PluginManager;
 
 public class MyApplication extends Application {
 
     private static final String TAG = "plugin_MyApplication";
 
+    private Resources pluginResources;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // 如果已经存在文件, 先删除 , 防止拷贝过程中出错
+        File pluginFile = new File(getFilesDir() + "/plugin.apk");
+        if (pluginFile.exists()){
+            pluginFile.delete();
+        }
 
         // 先将 assets 中的插件包拷贝到 内置存储中
         CommandUtils.copyAssets2File(
@@ -28,6 +38,16 @@ public class MyApplication extends Application {
         PluginManager.getInstance(this).init();
 
         Log.i(TAG, "插件化 初始化完毕");
+
+        // 设置插件包中的资源文件
+        pluginResources = PluginManager.getInstance(this).getmResources();
+
     }
 
+    @Override
+    public Resources getResources() {
+        if (pluginResources != null)
+            return pluginResources;
+        return super.getResources();
+    }
 }

@@ -1,6 +1,8 @@
 package kim.hsl.plugin;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -40,13 +42,18 @@ public class PluginManager {
     /**
      * 单例
      */
-    private static PluginManager instance;
+    private static PluginManager mInstance;
+
+    /**
+     * 要加载的插件包中的资源文件
+     */
+    private Resources mResources;
 
     public static PluginManager getInstance(Context context) {
-        if (instance == null) {
-            instance = new PluginManager(context);
+        if (mInstance == null) {
+            mInstance = new PluginManager(context);
         }
-        return instance;
+        return mInstance;
     }
 
     private PluginManager(Context context) {
@@ -60,6 +67,8 @@ public class PluginManager {
     public void init() {
         // 加载 apk 文件
         loadApk();
+        // 加载插件包中的资源文件
+        loadResources();
 
         // 在 AMS 启动之前使用占坑 Activity 替换插件包 Activity
         HookUtils.hookAms(mBase);
@@ -67,9 +76,6 @@ public class PluginManager {
         // 在 AMS 执行完毕后 , 主线程 ActivityThread 中创建 Activity 实例对象之间 ,
         //      再将插件包 Activity 替换回去
         HookUtils.hookActivityThread(mBase);
-
-        //HookUtils.HookAMS(mBase);
-        //HookUtils.hookMH(mBase);
     }
 
     private void loadApk() {
@@ -288,4 +294,31 @@ public class PluginManager {
 
     }
 
+    /**
+     * 加载资源文件
+     * @return
+     */
+    public Resources loadResources() {
+        // 获取插件包 APK 文件路径 , 加载该 APK 下的资源
+        // /data/user/0/com.example.plugin_hook/files/plugin.apk
+        String pluginPath = mBase.getFilesDir() + "/plugin.apk";
+
+        // 使用反射工具类进行链式调用 , 创建 AssetManager 对象
+        AssetManager assetManager = Reflector.on(AssetManager.class).newInstance();
+
+        // 使用反射调用 AssetManager 中的 addAssetPath 方法 , 传入 APK 插件包的路径
+        // addAssetPath 方法的参数为 /data/user/0/com.example.plugin_hook/files/plugin.apk
+        Reflector.on(assetManager).method("addAssetPath", String.class).call(pluginPath);
+
+        // 创建 Resources 并返回
+        return mResources = new Resources(
+                assetManager,
+                mBase.getResources().getDisplayMetrics(),
+                mBase.getResources().getConfiguration()
+        );
+    }
+
+    public Resources getmResources() {
+        return mResources;
+    }
 }

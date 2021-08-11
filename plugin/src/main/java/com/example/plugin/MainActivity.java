@@ -3,6 +3,7 @@ package com.example.plugin;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -19,5 +20,13 @@ public class MainActivity extends Activity {
 
     public void log(){
         Log.i(TAG, "Plugin MainActivity");
+    }
+
+    @Override
+    public Resources getResources() {
+        if (getApplication() != null && getApplication().getResources() != null) {
+            return getApplication().getResources();
+        }
+        return super.getResources();
     }
 }
