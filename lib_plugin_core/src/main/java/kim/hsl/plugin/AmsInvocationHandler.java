@@ -73,8 +73,4 @@ public class AmsInvocationHandler implements InvocationHandler {
         // 继续向后执行 , 这里要避免截断方法
         return method.invoke(mIActivityManager, args);
     }
-
-
-
-
 }
