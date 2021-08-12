@@ -1,28 +1,28 @@
-package com.example.plugin_hook;
+package com.example.host;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class MainActivity2 extends Activity {
+public class MainActivity extends Activity {
 
-    private static final String TAG = "plugin_MainActivity2";
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
 
-        Log.i(TAG, "MainActivity2 onCreate");
+
+        Log.i(TAG, "宿主应用 MainActivity onCreate");
 
         // 反射插件包中的 com.example.plugin.MainActivity
         Class<?> clazz = null;

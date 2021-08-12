@@ -2,3 +2,4 @@ rootProject.name = "Plugin_Hook"
 include ':app'
 include ':lib_plugin_core'
 include ':plugin'
+include ':host'

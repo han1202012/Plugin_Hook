@@ -67,6 +67,7 @@ public class PluginManager {
     public void init() {
         // 加载 apk 文件
         loadApk();
+
         // 加载插件包中的资源文件
         loadResources();
 
@@ -76,6 +77,9 @@ public class PluginManager {
         // 在 AMS 执行完毕后 , 主线程 ActivityThread 中创建 Activity 实例对象之间 ,
         //      再将插件包 Activity 替换回去
         HookUtils.hookActivityThread(mBase);
+
+        // 通过 Hook 方式修改 Activity 中的 Resources 资源
+        HookUtils.hookInstrumentation();
     }
 
     private void loadApk() {
@@ -319,7 +323,7 @@ public class PluginManager {
         );
     }
 
-    public Resources getmResources() {
+    public Resources getResources() {
         return mResources;
     }
 }

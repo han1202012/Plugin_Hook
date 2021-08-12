@@ -1,5 +1,6 @@
 package kim.hsl.plugin;
 
+import android.app.Instrumentation;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
@@ -202,6 +203,34 @@ public class HookUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 主要用于 Resources 资源的加载
+     */
+    public static void hookInstrumentation() {
+
+        // 反射 ActivityThread 类
+        // 反射获取 ActivityThread 类中的 sCurrentActivityThread 静态成员
+        // 这是单例类内部的静态成员
+        Object sCurrentActivityThreadObj =
+                Reflector.on("android.app.ActivityThread")      // 反射 ActivityThread 类
+                        .field("sCurrentActivityThread")        // 获取 sCurrentActivityThread 字段
+                        .get();                                 // 获取 sCurrentActivityThread 对象
+
+        // 反射获取 ActivityThread 对象中的 mInstrumentation 成员变量
+        // 目的是替换 sCurrentActivityThread 中的 mInstrumentation 字段
+        Reflector reflector =
+                Reflector.on("android.app.ActivityThread")      // 反射 ActivityThread 类
+                        .field("mInstrumentation")              // 获取 mInstrumentation 字段
+                        .with(sCurrentActivityThreadObj);       // 设置 ActivityThread 实例对象
+
+        // 获取 ActivityThread 中的 mInstrumentationObj 成员, 创建 Instrumentation 静态代理时使用
+        Instrumentation mInstrumentationObj = (Instrumentation) reflector.get();
+
+        // 将 ActivityThread 对象中的 mInstrumentation 成员变量
+        // 替换成自己的代理类
+        reflector.set(new InstrumentationProxy(mInstrumentationObj));
     }
 
 }
