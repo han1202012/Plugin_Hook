@@ -9,9 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.reflect.Field;
 
@@ -118,24 +115,36 @@ public class InstrumentationProxy extends Instrumentation {
         //      这里只有一个插件包 , 只设置一个 Boolean 变量即可
         if (!intent.getBooleanExtra("isPlugin", false)) return;
 
+
+        // 获取插件资源
+        Resources pluginResources = PluginManager.getInstance(activity).getResources();
+
+        // 反射 ContextThemeWrapper 类 , Activity 是 ContextThemeWrapper 的子类
+        // Resources mResources 成员定义在 ContextThemeWrapper 中
+        Class<?> contextThemeWrapperClass = null;
         try {
-            // 获取插件资源
-            Resources pluginResources = PluginManager.getInstance(activity).getResources();
-
-            // 反射 ContextThemeWrapper 类 , Activity 是 ContextThemeWrapper 的子类
-            // Resources mResources 成员定义在 ContextThemeWrapper 中
-            Class<?> contextThemeWrapperClass = Class.forName("android.view.ContextThemeWrapper");
-
-            // 反射获取 AppCompatActivity 类的 mResources 字段
-            Field mResourcesField = contextThemeWrapperClass.getDeclaredField("mResources");
-            // 设置字段可见性
-            mResourcesField.setAccessible(true);
-
-            // 将插件资源设置为
-            mResourcesField.set(activity, PluginManager.getInstance(activity).getResources());
-
-        } catch (Exception e) {
+            contextThemeWrapperClass = Class.forName("android.view.ContextThemeWrapper");
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        // 反射获取 ContextThemeWrapper 类的 mResources 字段
+        Field mResourcesField = null;
+        try {
+            mResourcesField = contextThemeWrapperClass.getDeclaredField("mResources");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        // 设置字段可见性
+        mResourcesField.setAccessible(true);
+
+        // 将插件资源设置到插件 Activity 中
+        try {
+            mResourcesField.set(activity, PluginManager.getInstance(activity).getResources());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }
